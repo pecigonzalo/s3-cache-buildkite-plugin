@@ -1,4 +1,4 @@
-name: s3cache
+name: s3-cache
 description: Upload and download artifacts
 author: https://github.com/buildkite
 requirements: []

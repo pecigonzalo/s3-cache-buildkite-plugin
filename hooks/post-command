@@ -1,19 +1,19 @@
 #!/bin/bash
 set -euo pipefail
 
-if [[ "${BUILDKITE_PLUGIN_S3CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
+if [[ "${BUILDKITE_PLUGIN_S3_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   echo "--- :hammer: Enabling debug mode"
   set -x
 fi
 
 paths=()
 
-if [[ -n "${BUILDKITE_PLUGIN_S3CACHE_DIRECTORIES:-}" ]]; then
-  paths+=("$BUILDKITE_PLUGIN_S3CACHE_DIRECTORIES")
+if [[ -n "${BUILDKITE_PLUGIN_S3_CACHE_DIRECTORIES:-}" ]]; then
+  paths+=("$BUILDKITE_PLUGIN_S3_CACHE_DIRECTORIES")
 fi
 
 while IFS='=' read -r path _; do
-  if [[ $path =~ ^(BUILDKITE_PLUGIN_S3CACHE_DIRECTORIES_[0-9]+) ]]; then
+  if [[ $path =~ ^(BUILDKITE_PLUGIN_S3_CACHE_DIRECTORIES_[0-9]+) ]]; then
     paths+=("${!path}")
   fi
 done < <(env | sort)
@@ -22,9 +22,9 @@ if [ "${#paths[@]}" -gt 0 ]; then
   echo "--- Compressing cache with tar"
   tar zcf "./cache.tar.gz" "${paths[*]}"
 
-  echo "--- Uploading cache to ${BUILDKITE_PLUGIN_S3CACHE_BUCKET}"
+  echo "--- Uploading cache to ${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}"
   aws s3 cp \
     "./cache.tar.gz" \
-    "s3://${BUILDKITE_PLUGIN_S3CACHE_BUCKET}/${BUILDKITE_PIPELINE_SLUG}/${BUILDKITE_BRANCH}.tar.gz"
+    "s3://${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}/${BUILDKITE_PIPELINE_SLUG}/${BUILDKITE_BRANCH}.tar.gz"
 
 fi

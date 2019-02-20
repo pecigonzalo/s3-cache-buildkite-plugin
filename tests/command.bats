@@ -13,13 +13,13 @@ load '/usr/local/lib/bats/load.bash'
 
   export BUILDKITE_PIPELINE_SLUG="test"
   export BUILDKITE_BRANCH=master
-  export BUILDKITE_PLUGIN_S3CACHE_BUCKET="test"
-  export BUILDKITE_PLUGIN_S3CACHE_DIRECTORIES="./cache"
+  export BUILDKITE_PLUGIN_S3_CACHE_BUCKET="test"
+  export BUILDKITE_PLUGIN_S3_CACHE_DIRECTORIES="./cache"
   run "$PWD/hooks/post-checkout"
 
   assert_success
   assert_output --partial "Downloading cache"
   assert_output --partial "Uncompressing cache"
 
-  unset BUILDKITE_PLUGIN_S3CACHE_DOWNLOAD
+  unset BUILDKITE_PLUGIN_S3_CACHE_DOWNLOAD
 }
