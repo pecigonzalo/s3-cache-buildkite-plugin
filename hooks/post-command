@@ -22,7 +22,7 @@ if [ "${#paths[@]}" -gt 0 ]; then
   echo "--- Compressing cache with tar"
 
   # Check if folders exist
-  present_paths=$(ls -d ${paths[*]} 2>null)
+  present_paths=$(ls -d ${paths[*]} 2>/dev/null)
   if [[ -n "${present_paths}" ]]; then
     tar vzcf "./cache.tar.gz" $present_paths
   else
