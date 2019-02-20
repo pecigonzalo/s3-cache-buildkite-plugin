@@ -18,6 +18,8 @@ while IFS='=' read -r path _; do
   fi
 done < <(env | sort)
 
+env
+
 if [ "${#paths[@]}" -gt 0 ]; then
   echo "--- Finding cache"
   # Look for cache for this branch
