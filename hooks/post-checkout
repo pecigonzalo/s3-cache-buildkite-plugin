@@ -12,10 +12,11 @@ if [[ -n "${BUILDKITE_PLUGIN_S3CACHE_DIRECTORIES:-}" ]]; then
   paths+=("$BUILDKITE_PLUGIN_S3CACHE_DIRECTORIES")
 fi
 
-workdir=${BUILDKITE_PLUGIN_S3CACHE_WORKDIR:-.}
-
-pushd "${workdir}"
-trap popd EXIT
+while IFS='=' read -r path _; do
+  if [[ $path =~ ^(BUILDKITE_PLUGIN_S3CACHE_DIRECTORIES_[0-9]+) ]]; then
+    paths+=("${!path}")
+  fi
+done < <(env | sort)
 
 if [ "${#paths[@]}" -gt 0 ]; then
   echo "--- Finding cache"
