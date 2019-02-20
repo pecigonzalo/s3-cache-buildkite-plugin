@@ -20,8 +20,12 @@ done < <(env | sort)
 
 if [ "${#paths[@]}" -gt 0 ]; then
   echo "--- Compressing cache with tar"
+
+  # Check if folders exist
   present_paths=$(ls -d ${paths[*]} 2>null)
-  tar vzcf "./cache.tar.gz" $present_paths
+  if [[ -n "${present_paths}" ]]; then
+    tar vzcf "./cache.tar.gz" $present_paths
+  fi
 
   if [[ -t "./cache.tar.gz" ]]; then
     echo "--- Uploading cache to ${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}"
