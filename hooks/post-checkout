@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -euo pipefail -x
 
 if [[ "${BUILDKITE_PLUGIN_S3CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   echo "--- :hammer: Enabling debug mode"
@@ -17,8 +17,6 @@ while IFS='=' read -r path _; do
     paths+=("${!path}")
   fi
 done < <(env | sort)
-
-env
 
 if [ "${#paths[@]}" -gt 0 ]; then
   echo "--- Finding cache"
