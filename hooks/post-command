@@ -21,6 +21,7 @@ done < <(env | sort)
 if [ "${#paths[@]}" -gt 0 ]; then
   echo "--- Compressing cache with tar"
   # Filter existing paths
+  tarlist=()
   for path in "${paths[@]}"; do
     if [[ -e "$path" ]]; then
       tarlist+=("$path")
@@ -28,7 +29,7 @@ if [ "${#paths[@]}" -gt 0 ]; then
   done
 
   if [[ "${#tarlist[@]}" -gt 0 ]]; then
-    tar vzcf "./cache.tar.gz" $present_paths
+    tar vzcf "./cache.tar.gz" ${tarlist[@]}
 
     if [[ -e "./cache.tar.gz" ]]; then
       echo "--- Uploading cache to ${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}"
