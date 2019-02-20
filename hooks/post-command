@@ -23,9 +23,10 @@ if [ "${#paths[@]}" -gt 0 ]; then
   present_paths=$(ls -d ${paths[*]} 2>null)
   tar vzcf "./cache.tar.gz" $present_paths
 
-  echo "--- Uploading cache to ${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}"
-  aws s3 cp \
-    "./cache.tar.gz" \
-    "s3://${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}/${BUILDKITE_PIPELINE_SLUG}/${BUILDKITE_BRANCH}.tar.gz"
-
+  if [[ -t "./cache.tar.gz" ]]; then
+    echo "--- Uploading cache to ${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}"
+    aws s3 cp \
+      "./cache.tar.gz" \
+      "s3://${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}/${BUILDKITE_PIPELINE_SLUG}/${BUILDKITE_BRANCH}.tar.gz"
+  fi
 fi
