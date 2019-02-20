@@ -25,6 +25,9 @@ if [ "${#paths[@]}" -gt 0 ]; then
   present_paths=$(ls -d ${paths[*]} 2>null)
   if [[ -n "${present_paths}" ]]; then
     tar vzcf "./cache.tar.gz" $present_paths
+  else
+    echo "No paths found for: "
+    echo "${paths[*]}"
   fi
 
   if [[ -e "./cache.tar.gz" ]]; then
@@ -32,5 +35,7 @@ if [ "${#paths[@]}" -gt 0 ]; then
     aws s3 cp \
       "./cache.tar.gz" \
       "s3://${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}/${BUILDKITE_PIPELINE_SLUG}/${BUILDKITE_BRANCH}.tar.gz"
+  else
+    echo "File: cache.tar.gz nothing to upload"
   fi
 fi
