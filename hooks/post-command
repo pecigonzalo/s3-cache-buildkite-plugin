@@ -20,7 +20,7 @@ done < <(env | sort)
 
 if [ "${#paths[@]}" -gt 0 ]; then
   echo "--- Compressing cache with tar"
-  tar zcf "./cache.tar.gz" "${paths[*]}"
+  tar vzcf "./cache.tar.gz" $(ls -d "${paths[*]}" 2>null)
 
   echo "--- Uploading cache to ${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}"
   aws s3 cp \

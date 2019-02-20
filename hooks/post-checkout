@@ -35,7 +35,7 @@ if [ "${#paths[@]}" -gt 0 ]; then
       "./${BUILDKITE_BRANCH}.tar.gz"
 
     echo "--- Uncompressing cache with tar"
-    tar -xzf "./cache.tar.gz"
+    tar vxzf "./cache.tar.gz"
   else
     echo "No cache found in ${S3_PATH}"
   fi
