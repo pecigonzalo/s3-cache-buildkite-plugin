@@ -1,0 +1,37 @@
+#!/bin/bash
+set -euo pipefail
+
+if [[ "${BUILDKITE_PLUGIN_S3CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
+  echo "--- :hammer: Enabling debug mode"
+  set -x
+fi
+
+paths=()
+
+if [[ -n "${BUILDKITE_PLUGIN_S3CACHE_DIRECTORIES:-}" ]]; then
+  paths+=("$BUILDKITE_PLUGIN_S3CACHE_DIRECTORIES")
+fi
+
+workdir=${BUILDKITE_PLUGIN_S3CACHE_WORKDIR:-.}
+
+pushd "${workdir}"
+trap popd EXIT
+
+if [ "${#paths[@]}" -gt 0 ]; then
+  echo "--- Finding cache"
+  # Look for cache for this branch
+  S3_PATH="s3://${BUILDKITE_PLUGIN_S3CACHE_BUCKET}/${BUILDKITE_PIPELINE_SLUG}/${BUILDKITE_BRANCH}"
+  if ! aws s3 ls "${S3_PATH}/cache.tar.gz" | grep -q 'cache.tar.gz'; then
+    if [[ -n "${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-}" ]]; then
+      S3_PATH="s3://${BUILDKITE_PLUGIN_S3CACHE_BUCKET}/${BUILDKITE_PIPELINE_SLUG}/${BUILDKITE_PULL_REQUEST_BASE_BRANCH}"
+    fi
+  fi
+
+  echo "--- Downloading cache from ${BUILDKITE_PLUGIN_S3CACHE_BUCKET}"
+  aws s3 cp \
+    "${S3_PATH}/cache.tar.gz" \
+    "./${BUILDKITE_BRANCH}.tar.gz"
+
+  echo "--- Uncompressing cache with tar"
+  tar -xzf "./cache.tar.gz"
+fi

@@ -1,0 +1,29 @@
+#!/bin/bash
+set -euo pipefail
+
+if [[ "${BUILDKITE_PLUGIN_S3CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
+  echo "--- :hammer: Enabling debug mode"
+  set -x
+fi
+
+paths=()
+
+if [[ -n "${BUILDKITE_PLUGIN_S3CACHE_DIRECTORIES:-}" ]]; then
+  paths+=("$BUILDKITE_PLUGIN_S3CACHE_DIRECTORIES")
+fi
+
+workdir=${BUILDKITE_PLUGIN_S3CACHE_WORKDIR:-.}
+
+pushd "${workdir}"
+trap popd EXIT
+
+if [ "${#paths[@]}" -gt 0 ]; then
+  echo "--- Compressing cache with tar"
+  tar zcf "./cache.tar.gz" "${paths[*]}"
+
+  echo "--- Uploading cache to ${BUILDKITE_PLUGIN_S3CACHE_BUCKET}"
+  aws s3 cp \
+    "./cache.tar.gz" \
+    "s3://${BUILDKITE_PLUGIN_S3CACHE_BUCKET}/${BUILDKITE_PIPELINE_SLUG}/${BUILDKITE_BRANCH}.tar.gz"
+
+fi
