@@ -11,6 +11,8 @@ if [[ "${BUILDKITE_PLUGIN_S3_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   set -x
 fi
 
+FILENAME=$(echo "${BUILDKITE_LABEL:-"no label"}" | sha256sum | cut -d" " -f 1)
+
 mapfile -t paths < <(plugin_read_list DIRECTORIES)
 
 if [ ${#paths[@]} -gt 0 ]; then
