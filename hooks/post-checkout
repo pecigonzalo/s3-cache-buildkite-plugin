@@ -1,22 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# shellcheck source=lib/params.bash
+. ./lib/params.bash
+
 if [[ "${BUILDKITE_PLUGIN_S3_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   echo "--- :hammer: Enabling debug mode"
   set -x
 fi
 
-paths=()
-
-if [[ -n "${BUILDKITE_PLUGIN_S3_CACHE_DIRECTORIES:-}" ]]; then
-  paths+=("$BUILDKITE_PLUGIN_S3_CACHE_DIRECTORIES")
-fi
-
-while IFS='=' read -r path _; do
-  if [[ $path =~ ^(BUILDKITE_PLUGIN_S3_CACHE_DIRECTORIES_[0-9]+) ]]; then
-    paths+=("${!path}")
-  fi
-done < <(env | sort)
+mapfile -t paths < <(plugin_read_list DIRECTORIES)
 
 if [ "${#paths[@]}" -gt 0 ]; then
   echo "--- Finding cache"
