@@ -4,7 +4,7 @@ set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck source=lib/params.bash
-. ./lib/params.bash
+. "$DIR/../lib/params.bash"
 
 if [[ "${BUILDKITE_PLUGIN_S3_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
   echo "--- :hammer: Enabling debug mode"
