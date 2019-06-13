@@ -30,7 +30,7 @@ if [ ${#paths[@]} -gt 0 ]; then
       echo "--- Uploading cache to ${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}"
       aws s3 cp \
         "./cache.tar.gz" \
-        "s3://${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}/${BUILDKITE_PIPELINE_SLUG}/${BUILDKITE_BRANCH}.tar.gz"
+        "s3://${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}/${BUILDKITE_PIPELINE_SLUG}/${BUILDKITE_BRANCH}/${FILENAME}.tar.gz"
     else
       echo "File cache.tar.gz missing, nothing to upload"
     fi
