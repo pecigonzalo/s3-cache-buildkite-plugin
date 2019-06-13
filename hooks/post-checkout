@@ -18,6 +18,7 @@ if [ "${#paths[@]}" -gt 0 ]; then
   # Look for cache for this branch
   S3_PATH="s3://${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}/${BUILDKITE_PIPELINE_SLUG}/${BUILDKITE_BRANCH}"
   if ! aws s3 ls "${S3_PATH}.tar.gz" | grep -q 'tar.gz'; then
+    echo "No cache found in ${S3_PATH}"
     if [[ -n "${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-}" ]]; then
       S3_PATH="s3://${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}/${BUILDKITE_PIPELINE_SLUG}/${BUILDKITE_PULL_REQUEST_BASE_BRANCH}"
     fi
