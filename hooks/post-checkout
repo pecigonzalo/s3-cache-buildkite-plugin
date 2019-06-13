@@ -6,6 +6,8 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib/params.bash
 . "$DIR/../lib/params.bash"
 
+mapfile -t paths < <(plugin_read_list DIRECTORIES)
+
 if [ "${#paths[@]}" -gt 0 ]; then
   echo "--- Finding cache"
   # Look for cache for this branch
