@@ -6,13 +6,6 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib/params.bash
 . "$DIR/../lib/params.bash"
 
-if [[ "${BUILDKITE_PLUGIN_S3_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
-  echo "--- :hammer: Enabling debug mode"
-  set -x
-fi
-
-FILENAME=$(echo "${BUILDKITE_LABEL:-"no label"}" | sha256sum | cut -d" " -f 1)
-
 mapfile -t paths < <(plugin_read_list DIRECTORIES)
 
 if [ ${#paths[@]} -gt 0 ]; then
@@ -28,6 +21,7 @@ if [ ${#paths[@]} -gt 0 ]; then
   done
 
   if [[ "${#tarlist[@]}" -gt 0 ]]; then
+    echo tar vzcf "./cache.tar.gz" ${tarlist[@]}
     tar vzcf "./cache.tar.gz" ${tarlist[@]}
 
     if [[ -e "./cache.tar.gz" ]]; then

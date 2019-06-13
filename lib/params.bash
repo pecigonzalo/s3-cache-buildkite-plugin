@@ -20,3 +20,11 @@ function prefix_read_list() {
     echo "${!prefix}"
   fi
 }
+
+if [[ "${BUILDKITE_PLUGIN_S3_CACHE_DEBUG:-false}" =~ (true|on|1) ]]; then
+  echo "--- :hammer: Enabling debug mode"
+  set -x
+fi
+
+UNIQUE=${BUILDKITE_PLUGIN_S3_CACHE_UNIQUE:-${BUILDKITE_LABEL}}
+FILENAME=$(echo "$UNIQUE" | sha256sum | cut -d" " -f 1)
