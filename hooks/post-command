@@ -5,6 +5,8 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck source=lib/params.bash
 . "$DIR/../lib/params.bash"
+# shellcheck source=lib/settings.bash
+. "$DIR/../lib/settings.bash"
 
 mapfile -t paths < <(plugin_read_list DIRECTORIES)
 
@@ -22,7 +24,7 @@ if [ ${#paths[@]} -gt 0 ]; then
 
   if [[ "${#tarlist[@]}" -gt 0 ]]; then
     echo tar vzcf "./cache.tar.gz" ${tarlist[@]}
-    tar vzcf "./cache.tar.gz" ${tarlist[@]}
+    tar -zcf "./cache.tar.gz" ${tarlist[@]}
 
     if [[ -e "./cache.tar.gz" ]]; then
       echo "--- Uploading cache to ${BUILDKITE_PLUGIN_S3_CACHE_BUCKET}"

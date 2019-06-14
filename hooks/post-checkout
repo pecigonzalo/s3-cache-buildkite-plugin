@@ -5,6 +5,8 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck source=lib/params.bash
 . "$DIR/../lib/params.bash"
+# shellcheck source=lib/settings.bash
+. "$DIR/../lib/settings.bash"
 
 mapfile -t paths < <(plugin_read_list DIRECTORIES)
 
@@ -26,7 +28,7 @@ if [ "${#paths[@]}" -gt 0 ]; then
       "./cache.tar.gz"
 
     echo "--- Uncompressing cache with tar"
-    tar vxzf "./cache.tar.gz"
+    tar -xzf "./cache.tar.gz"
   else
     echo "No cache found in ${S3_PATH}"
   fi
